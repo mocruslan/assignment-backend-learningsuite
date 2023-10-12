@@ -12,15 +12,17 @@ model Item {
   name      String
   done      Boolean  @default(false)
   columnId  Int
+  column    Column @relation(fields: [columnId], references: [id])
+  position  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Column    Column   @relation(fields: [columnId], references: [id])
 }
 
 model Column {
   id        Int      @id @default(autoincrement())
   name      String
   items     Item[]
+  position  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
