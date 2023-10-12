@@ -8,7 +8,6 @@ type Mutation {
     updateItem(itemId: ID!, name: String!): Item!
     moveItem(itemId: ID!, toColumnId: ID!, position: Int!): Boolean!
 
-    createColumn(name: String!): Column!
     updateColumn(columnId: ID!, name: String!): Column!
     moveColumn(columnId: ID!, position: Int!): Boolean!
 }
@@ -18,10 +17,12 @@ type Item {
     name: String!
     done: Boolean!
     columnId: ID!
+    position: Int!
 }
 
 type Column {
     id: ID!
     name: String!
     items: [Item!]!
+    position: Int!
 }
