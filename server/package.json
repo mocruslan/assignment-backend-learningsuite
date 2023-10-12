@@ -9,6 +9,11 @@
     "start-services": "docker-compose up -d",
     "stop-services": "docker-compose down",
     "prisma": "prisma"
+    "prisma-generate-client": "prisma validate --schema ./schemas/schema.prisma && prisma generate --schema ./schemas/schema.prisma",
+    "prisma-migrate-dev": "prisma validate --schema ./schemas/schema.prisma && prisma migrate dev --schema ./schemas/schema.prisma",
+    "prisma-migrate-status": "prisma migrate status",
+    "start-database": "docker-compose up -d",
+    "stop-database": "docker-compose down",
   },
   "devDependencies": {
     "@types/node": "^20.3.2",

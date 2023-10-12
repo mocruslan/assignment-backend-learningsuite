@@ -1,0 +1,27 @@
+type Query {
+    kanbanBoard: [Column!]!
+    item(id: ID!): Item
+}
+
+type Mutation {
+    createItem(columnId: ID!, name: String!): Item!
+    updateItem(itemId: ID!, name: String!): Item!
+    moveItem(itemId: ID!, toColumnId: ID!, position: Int!): Boolean!
+
+    createColumn(name: String!): Column!
+    updateColumn(columnId: ID!, name: String!): Column!
+    moveColumn(columnId: ID!, position: Int!): Boolean!
+}
+
+type Item {
+    id: ID!
+    name: String!
+    done: Boolean!
+    columnId: ID!
+}
+
+type Column {
+    id: ID!
+    name: String!
+    items: [Item!]!
+}
