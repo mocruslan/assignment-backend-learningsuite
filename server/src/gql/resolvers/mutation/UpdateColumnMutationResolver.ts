@@ -18,7 +18,7 @@ export class UpdateColumnMutationResolver extends MutationResolverAbstract {
             return updatedColumn;
         } catch (e) {
             console.error(e);
-            throw new Error('An error occurred while updating the column');
+            return new Promise((_, reject) => reject('An error occurred while updating the column'));
         }
     }
 
@@ -26,7 +26,7 @@ export class UpdateColumnMutationResolver extends MutationResolverAbstract {
         return this.client.column.update({
             where: {id: columnId},
             data: {
-                name: name
+                name: name.trim()
             },
             include: {
                 items: {

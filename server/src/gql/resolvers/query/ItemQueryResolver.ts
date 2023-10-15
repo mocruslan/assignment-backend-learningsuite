@@ -19,8 +19,7 @@ export class ItemQueryResolver extends QueryResolverAbstract {
             });
         } catch (e) {
             console.error(e);
-            throw new Error('An error occurred while fetching the item');
+            return new Promise((_, reject) => reject('An error occurred while fetching the item'));
         }
-
     }
 }

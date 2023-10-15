@@ -25,14 +25,14 @@ export class CreateItemMutationResolver extends MutationResolverAbstract {
             }
         } catch (e) {
             console.error(e);
-            throw new Error('An error occurred while creating the item');
+            return new Promise((_, reject) => reject('An error occurred while creating the item'));
         }
     }
 
     protected async createItem(name: string, columnId: string, maxPositionItem: number): Promise<any> {
         return this.client.item.create({
             data: {
-                name: name,
+                name: name.trim(),
                 index: maxPositionItem,
                 column: {
                     connect: {

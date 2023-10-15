@@ -22,20 +22,25 @@ class App {
         this.rootGenerator = new RootGenerator(this.resolverFactory);
     }
 
-    protected async addColumns(columns: string[]) {
-        for (let i = 0; i < columns.length; i++) {
-            const name = columns[i];
-            const existingColumn = await this.prisma.column.findFirst({
-                where: {name}
-            });
-            if (!existingColumn) {
+    protected async addDefaultColumns(columns: string[]) {
+        const currentCount = await this.prisma.column.count();
+        if (currentCount > 0) {
+            return;
+        }
+
+        try {
+            for (let i = 0; i < columns.length; i++) {
+                const name = columns[i];
                 await this.prisma.column.create({
                     data: {
                         name,
                         index: i
                     }
                 });
+
             }
+        } catch (e) {
+            console.error(e);
         }
     }
 
@@ -49,7 +54,7 @@ class App {
     }
 
     async start() {
-        await this.addColumns(this.defaultColumns);
+        await this.addDefaultColumns(this.defaultColumns);
 
         const app = express();
         app.use(cors());

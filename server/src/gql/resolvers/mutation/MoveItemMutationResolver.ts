@@ -28,7 +28,7 @@ export class MoveItemMutationResolver extends MutationResolverAbstract {
             return await this.fetchAllColumnsWithItemsAsc();
         } catch (e) {
             console.error(e);
-            throw new Error('An error occurred while moving item');
+            return new Promise((_, reject) => reject('An error occurred while moving item'));
         }
     }
 

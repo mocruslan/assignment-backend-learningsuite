@@ -23,7 +23,7 @@ export class MoveColumnMutationResolver extends MutationResolverAbstract {
             return await this.fetchAllColumnsWithItemsAsc();
         } catch (e) {
             console.error(e);
-            throw new Error('An error occurred while moving the column');
+            return new Promise((_, reject) => reject('An error occurred while moving the column'));
         }
     }
 
