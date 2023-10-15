@@ -7,8 +7,7 @@ type DeleteItemMutationResolverArgs = {
 export class DeleteItemMutationResolver extends MutationResolverAbstract {
     async getResolver(args: DeleteItemMutationResolverArgs): Promise<any> {
         const {itemId} = args;
-        console.log('DeleteItemMutationResolver')
-        console.log(args)
+        console.log(args); // TODO: Add as debug
 
         try {
             const deletedItem = await this.client.item.delete({
@@ -24,10 +23,10 @@ export class DeleteItemMutationResolver extends MutationResolverAbstract {
 
             await this.updateItemPositions(itemsToUpdate);
 
-            return this.fetchUpdatedColumns();
+            return this.fetchColumnWithItemsByIdAsc(deletedItem.columnId);
         } catch (e) {
             console.log(e);
-            return null;
+            throw new Error('An error occurred while deleting the item');
         }
     }
 
@@ -40,22 +39,5 @@ export class DeleteItemMutationResolver extends MutationResolverAbstract {
         });
 
         await Promise.all(updatePromises);
-    }
-
-    protected async fetchUpdatedColumns() {
-        return this.client.column.findMany({
-            include: {
-                items: {
-                    orderBy: {
-                        position: 'asc',
-                    },
-                },
-            },
-            orderBy: {
-                position: 'asc',
-            },
-        }).catch(e => {
-            console.log(e);
-        });
     }
 }

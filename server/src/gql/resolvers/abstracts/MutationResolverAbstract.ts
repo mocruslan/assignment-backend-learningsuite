@@ -6,4 +6,17 @@ export abstract class MutationResolverAbstract implements IResolver {
     }
 
     abstract getResolver(args: any): Promise<any>;
+
+    protected async fetchColumnWithItemsByIdAsc(columnId: number): Promise<any> {
+        return this.client.column.findUnique({
+            where: {id: columnId},
+            include: {
+                items: {
+                    orderBy: {
+                        position: 'asc',
+                    },
+                },
+            }
+        });
+    }
 }
