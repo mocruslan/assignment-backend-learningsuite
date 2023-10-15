@@ -15,12 +15,10 @@ const MUTATION_DELETE_KANBAN_ITEM = graphql(/* GraphQL */`
         deleteItem(itemId: $itemId) {
             id
             name
-            position
             items {
                 id
                 name
                 done
-                position
             }
         }
     }

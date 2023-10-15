@@ -16,12 +16,10 @@ const MUTATE_UPDATE_COLUMN = graphql(/* GraphQL */`
         updateColumn(columnId: $columnId, name: $name) {
             id
             name
-            position
             items {
                 id
                 name
                 done
-                position
             }
         }
     }

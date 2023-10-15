@@ -17,23 +17,19 @@ export function KanbanBoard() {
             (result.destination.index === result.source.index && result.source.droppableId === result.destination.droppableId)
         ) return;
 
-        console.log("Result")
-        console.log(result)
-        console.log(provided)
-
         switch (result.type.toLowerCase()) {
             case 'item':
                 await moveKanbanItem.mutateAsync({
                     itemId: result.draggableId,
                     toColumnId: result.destination.droppableId,
-                    position: result.destination.index,
+                    toIndex: result.destination.index,
                 });
                 break;
             case 'column':
                 if (result.destination.droppableId === 'kanbanBoard') {
                     await moveKanbanColumn.mutateAsync({
                         columnId: result.draggableId,
-                        position: result.destination.index,
+                        toIndex: result.destination.index,
                     });
                 }
                 break;

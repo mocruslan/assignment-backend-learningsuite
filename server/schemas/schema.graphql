@@ -7,10 +7,10 @@ type Mutation {
     createItem(columnId: ID!, name: String!): CreateItemMutationPayload!
     updateItem(itemId: ID!, name: String, done: Boolean): UpdateItemMutationPayload!
     deleteItem(itemId: ID!): Column!
-    moveItem(itemId: ID!, toColumnId: ID!, position: Int!): [Column!]! # TODO: toIndex
+    moveItem(itemId: ID!, toColumnId: ID!, toIndex: Int!): [Column!]!
 
     updateColumn(columnId: ID!, name: String): Column!
-    moveColumn(columnId: ID!, position: Int!): [Column!]! # TODO: toIndex
+    moveColumn(columnId: ID!, toIndex: Int!): [Column!]!
 }
 
 # --- Payload types ---
@@ -32,12 +32,12 @@ type Item {
     name: String!
     done: Boolean!
     columnId: ID!
-    position: Int! # TODO: rename To index
+    index: Int!
 }
 
 type Column {
     id: ID!
     name: String!
     items: [Item!]!
-    position: Int! # TODO: rename To index
+    index: Int!
 }

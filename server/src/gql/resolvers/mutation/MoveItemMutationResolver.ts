@@ -1,8 +1,14 @@
 import {MutationResolverAbstract} from "../abstracts/MutationResolverAbstract";
 
+type MoveItemMutationResolverArgs = {
+    itemId: string;
+    toColumnId: string;
+    toIndex: number;
+}
+
 export class MoveItemMutationResolver extends MutationResolverAbstract {
-    async getResolver(args: any): Promise<any> {
-        const {itemId, toColumnId, position} = args;
+    async getResolver(args: MoveItemMutationResolverArgs): Promise<any> {
+        const {itemId, toColumnId, toIndex} = args;
 
         try {
             const targetItem = await this.client.item.findUnique({
@@ -14,24 +20,24 @@ export class MoveItemMutationResolver extends MutationResolverAbstract {
 
             const hasColumnChanged = targetItem.columnId !== parseInt(toColumnId);
             if (hasColumnChanged) {
-                await this.reorderItemsAcrossColumns(targetItem, itemId, toColumnId, position);
+                await this.reorderItemsAcrossColumns(targetItem, itemId, toColumnId, toIndex);
             } else {
-                await this.reorderItemsWithinColumn(targetItem, itemId, position);
+                await this.reorderItemsWithinColumn(targetItem, itemId, toIndex);
             }
 
-            return this.fetchAllColumnsWithItemsAsc();
+            return await this.fetchAllColumnsWithItemsAsc();
         } catch (e) {
-            console.log(e);
+            console.error(e);
             throw new Error('An error occurred while moving item');
         }
     }
 
-    protected async reorderItemsWithinColumn(targetItem: any, itemId: string, newPosition: number) {
+    protected async reorderItemsWithinColumn(targetItem: any, itemId: string, newIndex: number) {
         const currentColumnItems = await this.fetchItemsByColumnId(targetItem.columnId);
         const itemIndex = currentColumnItems.findIndex(item => item.id === parseInt(itemId));
 
         const [movedItem] = currentColumnItems.splice(itemIndex, 1);
-        currentColumnItems.splice(newPosition, 0, movedItem);
+        currentColumnItems.splice(newIndex, 0, movedItem);
 
         await this.updateItemPositions(currentColumnItems);
     }
@@ -53,7 +59,7 @@ export class MoveItemMutationResolver extends MutationResolverAbstract {
 
     protected async updateItemPositions(items: any[], newColumnId?: number) {
         const updatePromises = items.map((item, index) => {
-            const data: any = {position: index};
+            const data: any = {index: index};
             if (newColumnId !== undefined) {
                 data.columnId = newColumnId;
             }

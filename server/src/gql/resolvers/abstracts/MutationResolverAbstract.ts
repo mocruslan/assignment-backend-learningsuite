@@ -10,7 +10,7 @@ export abstract class MutationResolverAbstract implements IResolver {
     protected async fetchItemsByColumnId(columnId: number) {
         return this.client.item.findMany({
             where: {columnId},
-            orderBy: {position: 'asc'},
+            orderBy: {index: 'asc'},
         });
     }
 
@@ -20,7 +20,7 @@ export abstract class MutationResolverAbstract implements IResolver {
             include: {
                 items: {
                     orderBy: {
-                        position: 'asc',
+                        index: 'asc',
                     },
                 },
             }
@@ -33,12 +33,12 @@ export abstract class MutationResolverAbstract implements IResolver {
             include: {
                 items: {
                     orderBy: {
-                        position: 'asc',
+                        index: 'asc',
                     },
                 },
             },
             orderBy: {
-                position: 'asc',
+                index: 'asc',
             },
         }).catch(e => {
             console.log(e);
@@ -48,7 +48,7 @@ export abstract class MutationResolverAbstract implements IResolver {
     protected async fetchAllColumnsAsc() {
         return this.client.column.findMany({
             orderBy: {
-                position: 'asc',
+                index: 'asc',
             },
         });
     }
@@ -58,12 +58,12 @@ export abstract class MutationResolverAbstract implements IResolver {
             include: {
                 items: {
                     orderBy: {
-                        position: 'asc',
+                        index: 'asc',
                     },
                 },
             },
             orderBy: {
-                position: 'asc',
+                index: 'asc',
             },
         });
     }

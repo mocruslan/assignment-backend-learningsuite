@@ -18,12 +18,10 @@ const MUTATE_UPDATE_ITEM = graphql(/* GraphQL */`
             column {
                 id
                 name
-                position
                 items {
                     id
                     name
                     done
-                    position
                 }
             }
         }

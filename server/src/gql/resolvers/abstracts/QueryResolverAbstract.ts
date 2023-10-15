@@ -6,4 +6,19 @@ export abstract class QueryResolverAbstract implements IResolver {
     }
 
     abstract getResolver(args: any): Promise<any>;
+
+    protected async fetchAllColumnsWithItemsAsc() {
+        return this.client.column.findMany({
+            include: {
+                items: {
+                    orderBy: {
+                        index: 'asc',
+                    },
+                },
+            },
+            orderBy: {
+                index: 'asc',
+            },
+        });
+    }
 }

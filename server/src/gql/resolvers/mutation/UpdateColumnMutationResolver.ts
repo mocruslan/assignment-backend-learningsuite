@@ -1,6 +1,6 @@
 import {MutationResolverAbstract} from "../abstracts/MutationResolverAbstract";
 
-export type UpdateColumnMutationResolverArgs = {
+type UpdateColumnMutationResolverArgs = {
     columnId: string;
     name: string;
 }
@@ -8,7 +8,6 @@ export type UpdateColumnMutationResolverArgs = {
 export class UpdateColumnMutationResolver extends MutationResolverAbstract {
     async getResolver(args: UpdateColumnMutationResolverArgs): Promise<any> {
         const {columnId, name} = args;
-        console.log(args);
 
         try {
             const updatedColumn = await this.updateColumn(parseInt(columnId), name);
@@ -18,7 +17,7 @@ export class UpdateColumnMutationResolver extends MutationResolverAbstract {
 
             return updatedColumn;
         } catch (e) {
-            console.log(e);
+            console.error(e);
             throw new Error('An error occurred while updating the column');
         }
     }
@@ -32,7 +31,7 @@ export class UpdateColumnMutationResolver extends MutationResolverAbstract {
             include: {
                 items: {
                     orderBy: {
-                        position: 'asc',
+                        index: 'asc',
                     }
                 },
             },

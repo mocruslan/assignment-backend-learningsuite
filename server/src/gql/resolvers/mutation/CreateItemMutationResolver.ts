@@ -24,7 +24,7 @@ export class CreateItemMutationResolver extends MutationResolverAbstract {
                 column: updatedColumn,
             }
         } catch (e) {
-            console.log(e);
+            console.error(e);
             throw new Error('An error occurred while creating the item');
         }
     }
@@ -33,7 +33,7 @@ export class CreateItemMutationResolver extends MutationResolverAbstract {
         return this.client.item.create({
             data: {
                 name: name,
-                position: maxPositionItem,
+                index: maxPositionItem,
                 column: {
                     connect: {
                         id: parseInt(columnId),
@@ -45,11 +45,11 @@ export class CreateItemMutationResolver extends MutationResolverAbstract {
 
     protected async getIncrementedPosition(columnId: number): Promise<number> {
         const item = await this.client.item.findFirst({
-            select: {position: true},
+            select: {index: true},
             where: {columnId: columnId},
-            orderBy: {position: 'desc'},
+            orderBy: {index: 'desc'},
         });
 
-        return item ? item.position + 1 : 0;
+        return item ? item.index + 1 : 0;
     }
 }

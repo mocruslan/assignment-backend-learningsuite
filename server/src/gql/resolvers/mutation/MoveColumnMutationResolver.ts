@@ -1,26 +1,28 @@
 import {MutationResolverAbstract} from "../abstracts/MutationResolverAbstract";
 
-export type MoveColumnMutationResolverArgs = {
+type MoveColumnMutationResolverArgs = {
     columnId: string;
-    position: number;
+    toIndex: number;
 };
 
 export class MoveColumnMutationResolver extends MutationResolverAbstract {
     async getResolver(args: MoveColumnMutationResolverArgs): Promise<any> {
+        const {columnId, toIndex} = args;
+
         try {
             const columnsToUpdate = await this.fetchAllColumnsAsc();
             if (!columnsToUpdate) {
                 throw new Error('No columns found');
             }
 
-            const indexToRemove = this.findIndexToRemove(columnsToUpdate, args.columnId);
-            const reorderedColumns = this.reorderColumns(columnsToUpdate, indexToRemove, args.position);
+            const indexToRemove = this.findIndexToRemove(columnsToUpdate, columnId);
+            const reorderedColumns = this.reorderColumns(columnsToUpdate, indexToRemove, toIndex);
 
             await this.updateColumnPositions(reorderedColumns);
 
-            return this.fetchAllColumnsWithItemsAsc();
+            return await this.fetchAllColumnsWithItemsAsc();
         } catch (e) {
-            console.log(e);
+            console.error(e);
             throw new Error('An error occurred while moving the column');
         }
     }
@@ -33,15 +35,15 @@ export class MoveColumnMutationResolver extends MutationResolverAbstract {
         return index;
     }
 
-    protected reorderColumns(columns: any[], indexToRemove: number, newPosition: number): any[] {
+    protected reorderColumns(columns: any[], indexToRemove: number, newIndex: number): any[] {
         const [removed] = columns.splice(indexToRemove, 1);
-        columns.splice(newPosition, 0, removed);
+        columns.splice(newIndex, 0, removed);
         return columns;
     }
 
     protected async updateColumnPositions(columns: any[]): Promise<void> {
         const updatePromises = columns.map((column, index) => {
-            if (column.position !== index) {
+            if (column.index !== index) {
                 return this.updateColumnPositionForId(column.id, index);
             }
             return Promise.resolve();
@@ -49,10 +51,10 @@ export class MoveColumnMutationResolver extends MutationResolverAbstract {
         await Promise.all(updatePromises);
     }
 
-    protected updateColumnPositionForId(columnId: number, position: number) {
+    protected updateColumnPositionForId(columnId: number, index: number) {
         return this.client.column.update({
             where: {id: columnId},
-            data: {position}
+            data: {index}
         });
     }
 }

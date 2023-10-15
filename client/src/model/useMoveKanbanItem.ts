@@ -9,20 +9,18 @@ import {Column, MoveItemMutation} from "../gql/graphql";
 type MoveItemMutationVariables = {
     itemId: string
     toColumnId: string
-    position: number
+    toIndex: number
 }
 
 const MUTATE_MOVE_ITEM = graphql(/* GraphQL */`
-    mutation MoveItem($itemId: ID!, $toColumnId: ID!, $position: Int!) {
-        moveItem(itemId: $itemId, toColumnId: $toColumnId, position: $position) {
+    mutation MoveItem($itemId: ID!, $toColumnId: ID!, $toIndex: Int!) {
+        moveItem(itemId: $itemId, toColumnId: $toColumnId, toIndex: $toIndex) {
             id
             name
-            position
             items {
                 id
                 name
                 done
-                position
             }
         }
     }

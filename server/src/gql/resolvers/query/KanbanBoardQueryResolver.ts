@@ -2,21 +2,12 @@ import {QueryResolverAbstract} from "../abstracts/QueryResolverAbstract";
 
 export class KanbanBoardQueryResolver extends QueryResolverAbstract {
     async getResolver(args: {}): Promise<any> {
-        console.log(args);
+        try {
+            return await this.fetchAllColumnsWithItemsAsc();
+        } catch (e) {
+            console.error(e);
+            throw new Error('An error occurred while fetching the kanban board');
+        }
 
-        return this.client.column.findMany({
-            include: {
-                items: {
-                    orderBy: {
-                        position: 'asc',
-                    }
-                },
-            },
-            orderBy: {
-                position: 'asc',
-            }
-        }).catch(e => {
-            console.log(e)
-        });
     }
 }

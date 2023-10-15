@@ -1,22 +1,26 @@
 import {QueryResolverAbstract} from "../abstracts/QueryResolverAbstract";
 
-export type ItemQueryResolverArgs = {
+type ItemQueryResolverArgs = {
     id: string;
 }
 
 export class ItemQueryResolver extends QueryResolverAbstract {
     async getResolver(args: ItemQueryResolverArgs): Promise<any> {
-        console.log(args);
+        const {id} = args;
 
-        return this.client.item.findUnique({
-            where: {
-                id: parseInt(args.id)
-            },
-            include: {
-                column: true
-            }
-        }).catch(e => {
-            console.log(e)
-        });
+        try {
+            return await this.client.item.findUnique({
+                where: {
+                    id: parseInt(id)
+                },
+                include: {
+                    column: true
+                }
+            });
+        } catch (e) {
+            console.error(e);
+            throw new Error('An error occurred while fetching the item');
+        }
+
     }
 }
