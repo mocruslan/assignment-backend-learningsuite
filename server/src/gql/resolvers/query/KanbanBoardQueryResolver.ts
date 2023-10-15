@@ -6,8 +6,7 @@ export class KanbanBoardQueryResolver extends QueryResolverAbstract {
             return await this.fetchAllColumnsWithItemsAsc();
         } catch (e) {
             console.error(e);
-            throw new Error('An error occurred while fetching the kanban board');
+            return new Promise((_, reject) => reject('An error occurred while fetching the kanban board'));
         }
-
     }
 }

@@ -23,7 +23,7 @@ export class UpdateItemMutationResolver extends MutationResolverAbstract {
             }
         } catch (e) {
             console.error(e);
-            throw new Error('An error occurred while updating the item');
+            return new Promise((_, reject) => reject('An error occurred while updating the item'));
         }
     }
 
@@ -31,7 +31,7 @@ export class UpdateItemMutationResolver extends MutationResolverAbstract {
         return this.client.item.update({
             where: {id: itemId},
             data: {
-                name: name,
+                name: name?.trim(),
                 done: done
             }
         });

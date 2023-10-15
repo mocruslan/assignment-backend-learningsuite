@@ -21,9 +21,9 @@ export const CustomDialog = ({
     const [newItemValue, setNewItemValue] = useState(initialValue ? initialValue : '');
 
     const handleSubmit = () => {
-        onSave(newItemValue);
+        onSave(newItemValue.trim());
         onClose();
-        setNewItemValue('');
+        setNewItemValue(newItemValue.trim());
     };
 
     return (

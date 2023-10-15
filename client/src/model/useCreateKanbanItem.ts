@@ -3,7 +3,7 @@ import request from "graphql-request";
 import {GRAPHQL_SERVER} from "../config";
 import {graphql} from "../gql";
 import {QUERY_KANBAN_BOARD_KEY} from "./useKanbanData";
-import {CreateItemMutation} from "../gql/graphql";
+import {Column, CreateItemMutation} from "../gql/graphql";
 
 
 type CreateItemMutationVariables = {
@@ -38,7 +38,7 @@ export function useCreateKanbanItem() {
                 variables,
             ),
         onSuccess: async (data: CreateItemMutation, variables: CreateItemMutationVariables) => {
-            const existingData = client.getQueryData<{ kanbanBoard: any[] }>([QUERY_KANBAN_BOARD_KEY]);
+            const existingData = client.getQueryData<{ kanbanBoard: Column[] }>([QUERY_KANBAN_BOARD_KEY]);
 
             if (existingData) {
                 const updatedKanbanBoard = existingData.kanbanBoard.map(column => {

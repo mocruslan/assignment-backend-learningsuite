@@ -30,8 +30,6 @@ export function DraggableKanbanItem({index, item: {id, name, done}}: {
     }
 
     async function handleDelete() {
-        console.log("Delete")
-        console.log(id)
         await deleteItemMutation.mutateAsync({
             itemId: id
         })

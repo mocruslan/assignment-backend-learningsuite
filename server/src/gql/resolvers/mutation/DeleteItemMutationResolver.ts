@@ -22,7 +22,7 @@ export class DeleteItemMutationResolver extends MutationResolverAbstract {
             return await this.fetchColumnWithItemsByIdAsc(deletedItem.columnId);
         } catch (e) {
             console.error(e);
-            throw new Error('An error occurred while deleting the item');
+            return new Promise((_, reject) => reject('An error occurred while deleting the item'));
         }
     }
 

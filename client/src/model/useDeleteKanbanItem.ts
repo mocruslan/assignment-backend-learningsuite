@@ -43,7 +43,6 @@ export function useDeleteKanbanItem() {
                         return existingColumn.id === data.deleteItem.id ? data.deleteItem : existingColumn;
                 });
 
-                // Update the query cache with the new kanban board data
                 client.setQueryData([QUERY_KANBAN_BOARD_KEY], {kanbanBoard: updatedKanbanBoard});
             }
         }
