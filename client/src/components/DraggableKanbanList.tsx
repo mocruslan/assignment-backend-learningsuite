@@ -5,66 +5,92 @@ import {DraggableKanbanItem} from "./DraggableKanbanItem";
 import {useState} from "react";
 import {useCreateKanbanItem} from "../model/useCreateKanbanItem";
 import {CustomDialog} from "./CustomDialog";
+import {useUpdateKanbanColumn} from "../model/useUpdateKanbanColumn";
 
-export function DraggableKanbanList({
-                                        index,
-                                        title, items, id
-                                    }: {
+type DraggableKanbanListProps = {
     title: string,
     id: string,
     items: { id: string, name: string, done: boolean }[],
     index: any
-}) {
+}
 
+export function DraggableKanbanList(
+    {
+        title,
+        id,
+        index,
+        items
+    }: DraggableKanbanListProps) {
     const createItemMutation = useCreateKanbanItem();
+    const updateColumnMutation = useUpdateKanbanColumn();
 
-    const [open, setOpen] = useState(false);
+    const [openItemAdd, setOpenItemAdd] = useState(false);
+    const [openRename, setOpenRename] = useState(false);
 
-    const handleAdd = async (newName: string) => {
+    async function handleRenameColumn(newColumnName: string) {
+        await updateColumnMutation.mutateAsync({
+            columnId: id,
+            name: newColumnName
+        });
+    }
+
+    async function handleAddItem(newItemName: string) {
         await createItemMutation.mutateAsync({
             columnId: id,
-            name: newName
+            name: newItemName
         });
-    };
+    }
 
     return (
         <Draggable draggableId={id} index={index}>
             {(provided: DraggableProvided) => (
-                <KanbanList
-                    title={title}
-                    {...provided.draggableProps} {...provided.dragHandleProps}
-                    ref={provided.innerRef}
-                >
-                    <Droppable droppableId={id}
-                               direction={'vertical'} type={'item'}>
-                        {(provided) => (
-                            <Stack spacing={2} ref={provided.innerRef}
-                                   {...provided.droppableProps}
-                            >
-                                {
-                                    items.map((item, index) => (
-                                        <DraggableKanbanItem
-                                            key={item.id}
-                                            item={item}
-                                            index={index}
-                                        />
-                                    ))
-                                }
-                                {provided.placeholder}
-                            </Stack>
-                        )}
-                    </Droppable>
+                <>
+                    <KanbanList
+                        title={title}
+                        {...provided.draggableProps} {...provided.dragHandleProps}
+                        onRenameClick={() => setOpenRename(true)}
+                        ref={provided.innerRef}
+                    >
+                        <Droppable droppableId={id}
+                                   direction={'vertical'} type={'item'}>
+                            {(provided) => (
+                                <Stack spacing={2} ref={provided.innerRef}
+                                       {...provided.droppableProps}
+                                >
+                                    {
+                                        items.map((item, index) => (
+                                            <DraggableKanbanItem
+                                                key={item.id}
+                                                item={item}
+                                                index={index}
+                                            />
+                                        ))
+                                    }
+                                    {provided.placeholder}
+                                </Stack>
+                            )}
+                        </Droppable>
 
-                    <Button onClick={() => setOpen(true)}>Add item</Button>
+                        <Button onClick={() => setOpenRename(true)}>Add item</Button>
+
+                        <CustomDialog
+                            textFieldHint={'Item name'}
+                            actionButtonText="Add"
+                            open={openItemAdd}
+                            onClose={() => setOpenItemAdd(false)}
+                            onSave={handleAddItem}
+                        />
+                    </KanbanList>
 
                     <CustomDialog
-                        textFieldHint={'Item name'}
-                        actionButtonText="Add"
-                        open={open}
-                        onClose={() => setOpen(false)}
-                        onSave={handleAdd}
+                        textFieldHint={'New name'}
+                        initialValue={title}
+                        actionButtonText="Rename"
+                        open={openRename}
+                        onClose={() => setOpenRename(false)}
+                        onSave={handleRenameColumn}
                     />
-                </KanbanList>
+                </>
             )}
         </Draggable>
     );

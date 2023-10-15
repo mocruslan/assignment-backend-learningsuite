@@ -23,7 +23,7 @@ export function useCreateKanbanItem() {
         mutationFn: async (variables: { columnId: string, name: string }) =>
             request(
                 GRAPHQL_SERVER,
-                MUTATE_CREATE_ITEM, // TODO: Use actual type
+                MUTATE_CREATE_ITEM,
                 variables,
             ),
         onSettled: async () => {

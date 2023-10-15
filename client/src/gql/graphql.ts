@@ -37,6 +37,7 @@ export type Item = {
 export type Mutation = {
   __typename?: 'Mutation';
   createItem: Item;
+  deleteItem: Array<Column>;
   moveColumn: Array<Column>;
   moveItem: Array<Column>;
   updateColumn: Column;
@@ -47,6 +48,11 @@ export type Mutation = {
 export type MutationCreateItemArgs = {
   columnId: Scalars['ID']['input'];
   name: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteItemArgs = {
+  itemId: Scalars['ID']['input'];
 };
 
 
@@ -65,7 +71,7 @@ export type MutationMoveItemArgs = {
 
 export type MutationUpdateColumnArgs = {
   columnId: Scalars['ID']['input'];
-  name: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -94,6 +100,13 @@ export type CreateItemMutationVariables = Exact<{
 
 export type CreateItemMutation = { __typename?: 'Mutation', createItem: { __typename?: 'Item', id: string, name: string, done: boolean, columnId: string, position: number } };
 
+export type DeleteItemMutationVariables = Exact<{
+  itemId: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteItemMutation = { __typename?: 'Mutation', deleteItem: Array<{ __typename?: 'Column', id: string, name: string, items: Array<{ __typename?: 'Item', id: string, name: string, done: boolean }> }> };
+
 export type KanbanBoardQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -116,6 +129,14 @@ export type MoveItemMutationVariables = Exact<{
 
 export type MoveItemMutation = { __typename?: 'Mutation', moveItem: Array<{ __typename?: 'Column', id: string, name: string, items: Array<{ __typename?: 'Item', id: string, name: string, done: boolean }> }> };
 
+export type UpdateColumnMutationVariables = Exact<{
+  columnId: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type UpdateColumnMutation = { __typename?: 'Mutation', updateColumn: { __typename?: 'Column', id: string, name: string, items: Array<{ __typename?: 'Item', id: string, name: string, done: boolean }> } };
+
 export type UpdateItemMutationVariables = Exact<{
   itemId: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
@@ -131,23 +152,27 @@ export const CreateItemDocument = {
     "kind": "OperationDefinition", "operation": "mutation", "name": {"kind": "Name", "value": "CreateItem"}, "variableDefinitions": [{"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "columnId"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "ID"}}}}, {"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "name"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "String"}}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "createItem"}, "arguments": [{"kind": "Argument", "name": {"kind": "Name", "value": "columnId"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "columnId"}}}, {"kind": "Argument", "name": {"kind": "Name", "value": "name"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "name"}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "done"}}, {"kind": "Field", "name": {"kind": "Name", "value": "columnId"}}, {"kind": "Field", "name": {"kind": "Name", "value": "position"}}]}}]}
   }]
 } as unknown as DocumentNode<CreateItemMutation, CreateItemMutationVariables>;
+export const DeleteItemDocument = {
+  "kind": "Document", "definitions": [{
+    "kind": "OperationDefinition", "operation": "mutation", "name": {"kind": "Name", "value": "DeleteItem"}, "variableDefinitions": [{"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "itemId"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "ID"}}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "deleteItem"}, "arguments": [{"kind": "Argument", "name": {"kind": "Name", "value": "itemId"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "itemId"}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "items"}, "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "done"}}]}}]}}]}
+  }]
+} as unknown as DocumentNode<DeleteItemMutation, DeleteItemMutationVariables>;
 export const KanbanBoardDocument = {"kind": "Document", "definitions": [{"kind": "OperationDefinition", "operation": "query", "name": {"kind": "Name", "value": "KanbanBoard"}, "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "kanbanBoard"}, "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "items"}, "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "done"}}]}}]}}]}}]} as unknown as DocumentNode<KanbanBoardQuery, KanbanBoardQueryVariables>;
 export const MoveColumnDocument = {
   "kind": "Document", "definitions": [{
-    "kind": "OperationDefinition", "operation": "mutation", "name": {"kind": "Name", "value": "MoveColumn"}, "variableDefinitions": [{"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "columnId"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "ID"}}}}, {"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "position"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "Int"}}}}], "selectionSet": {
-      "kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "moveColumn"}, "arguments": [{"kind": "Argument", "name": {"kind": "Name", "value": "columnId"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "columnId"}}}, {"kind": "Argument", "name": {"kind": "Name", "value": "position"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "position"}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "position"}}, {"kind": "Field", "name": {"kind": "Name", "value": "items"}, "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "done"}}, {"kind": "Field", "name": {"kind": "Name", "value": "position"}}]}}]}}]
-    }
+    "kind": "OperationDefinition", "operation": "mutation", "name": {"kind": "Name", "value": "MoveColumn"}, "variableDefinitions": [{"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "columnId"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "ID"}}}}, {"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "position"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "Int"}}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "moveColumn"}, "arguments": [{"kind": "Argument", "name": {"kind": "Name", "value": "columnId"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "columnId"}}}, {"kind": "Argument", "name": {"kind": "Name", "value": "position"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "position"}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "position"}}, {"kind": "Field", "name": {"kind": "Name", "value": "items"}, "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "done"}}, {"kind": "Field", "name": {"kind": "Name", "value": "position"}}]}}]}}]}
   }]
 } as unknown as DocumentNode<MoveColumnMutation, MoveColumnMutationVariables>;
 export const MoveItemDocument = {
   "kind": "Document", "definitions": [{
-    "kind": "OperationDefinition", "operation": "mutation", "name": {"kind": "Name", "value": "MoveItem"}, "variableDefinitions": [{"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "itemId"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "ID"}}}}, {"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "toColumnId"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "ID"}}}}, {"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "position"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "Int"}}}}], "selectionSet": {
-      "kind": "SelectionSet", "selections": [{
-        "kind": "Field", "name": {"kind": "Name", "value": "moveItem"}, "arguments": [{"kind": "Argument", "name": {"kind": "Name", "value": "itemId"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "itemId"}}}, {"kind": "Argument", "name": {"kind": "Name", "value": "toColumnId"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "toColumnId"}}}, {"kind": "Argument", "name": {"kind": "Name", "value": "position"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "position"}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "items"}, "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "done"}}]}}]}
-      }]
-    }
+    "kind": "OperationDefinition", "operation": "mutation", "name": {"kind": "Name", "value": "MoveItem"}, "variableDefinitions": [{"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "itemId"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "ID"}}}}, {"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "toColumnId"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "ID"}}}}, {"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "position"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "Int"}}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "moveItem"}, "arguments": [{"kind": "Argument", "name": {"kind": "Name", "value": "itemId"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "itemId"}}}, {"kind": "Argument", "name": {"kind": "Name", "value": "toColumnId"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "toColumnId"}}}, {"kind": "Argument", "name": {"kind": "Name", "value": "position"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "position"}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "items"}, "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "done"}}]}}]}}]}
   }]
 } as unknown as DocumentNode<MoveItemMutation, MoveItemMutationVariables>;
+export const UpdateColumnDocument = {
+  "kind": "Document", "definitions": [{
+    "kind": "OperationDefinition", "operation": "mutation", "name": {"kind": "Name", "value": "UpdateColumn"}, "variableDefinitions": [{"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "columnId"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "ID"}}}}, {"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "name"}}, "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "String"}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "updateColumn"}, "arguments": [{"kind": "Argument", "name": {"kind": "Name", "value": "columnId"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "columnId"}}}, {"kind": "Argument", "name": {"kind": "Name", "value": "name"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "name"}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "items"}, "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "done"}}]}}]}}]}
+  }]
+} as unknown as DocumentNode<UpdateColumnMutation, UpdateColumnMutationVariables>;
 export const UpdateItemDocument = {
   "kind": "Document", "definitions": [{
     "kind": "OperationDefinition", "operation": "mutation", "name": {"kind": "Name", "value": "UpdateItem"}, "variableDefinitions": [{"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "itemId"}}, "type": {"kind": "NonNullType", "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "ID"}}}}, {"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "name"}}, "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "String"}}}, {"kind": "VariableDefinition", "variable": {"kind": "Variable", "name": {"kind": "Name", "value": "done"}}, "type": {"kind": "NamedType", "name": {"kind": "Name", "value": "Boolean"}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "updateItem"}, "arguments": [{"kind": "Argument", "name": {"kind": "Name", "value": "itemId"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "itemId"}}}, {"kind": "Argument", "name": {"kind": "Name", "value": "name"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "name"}}}, {"kind": "Argument", "name": {"kind": "Name", "value": "done"}, "value": {"kind": "Variable", "name": {"kind": "Name", "value": "done"}}}], "selectionSet": {"kind": "SelectionSet", "selections": [{"kind": "Field", "name": {"kind": "Name", "value": "id"}}, {"kind": "Field", "name": {"kind": "Name", "value": "name"}}, {"kind": "Field", "name": {"kind": "Name", "value": "done"}}]}}]}

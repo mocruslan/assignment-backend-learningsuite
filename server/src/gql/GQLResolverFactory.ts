@@ -8,6 +8,7 @@ import {MoveItemMutationResolver} from "./resolvers/mutation/MoveItemMutationRes
 import {UpdateColumnMutationResolver} from "./resolvers/mutation/UpdateColumnMutationResolver";
 import {KanbanBoardQueryResolver} from "./resolvers/query/KanbanBoardQueryResolver";
 import {ItemQueryResolver} from "./resolvers/query/ItemQueryResolver";
+import {DeleteItemMutationResolver} from "./resolvers/mutation/DeleteItemMutationResolver";
 
 export class GQLResolverFactory extends ResolverFactoryAbstract {
     getMutationResolverByType(type: GQLMutationResolverTypes): IResolver {
@@ -18,10 +19,14 @@ export class GQLResolverFactory extends ResolverFactoryAbstract {
                 return new UpdateItemMutationResolver(this.client);
             case GQLMutationResolverTypes.MoveItem:
                 return new MoveItemMutationResolver(this.client);
+            case GQLMutationResolverTypes.DeleteItem:
+                return new DeleteItemMutationResolver(this.client);
             case GQLMutationResolverTypes.UpdateColumn:
                 return new UpdateColumnMutationResolver(this.client);
             case GQLMutationResolverTypes.MoveColumn:
                 return new MoveColumnMutationResolver(this.client);
+            default:
+                throw new Error(`Unknown mutation resolver type: ${type}`);
         }
     }
 
