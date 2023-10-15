@@ -6,8 +6,17 @@ export type ItemQueryResolverArgs = {
 
 export class ItemQueryResolver extends QueryResolverAbstract {
     async getResolver(args: ItemQueryResolverArgs): Promise<any> {
+        console.log(args);
+
         return this.client.item.findUnique({
-            where: {id: parseInt(args.id)},
+            where: {
+                id: parseInt(args.id)
+            },
+            include: {
+                column: true
+            }
+        }).catch(e => {
+            console.log(e)
         });
     }
 }

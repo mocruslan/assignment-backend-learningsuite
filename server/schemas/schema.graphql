@@ -5,14 +5,14 @@ type Query {
 
 type Mutation {
     createItem(columnId: ID!, name: String!): Item!
-    updateItem(itemId: ID!, name: String!): Item!
-    moveItem(itemId: ID!, toColumnId: ID!, position: Int!): Boolean!
+    updateItem(itemId: ID!, name: String, done: Boolean): Item!
+    moveItem(itemId: ID!, toColumnId: ID!, position: Int!): [Column!]! # TODO: toIndex
 
     updateColumn(columnId: ID!, name: String!): Column!
-    moveColumn(columnId: ID!, position: Int!): Boolean!
+    moveColumn(columnId: ID!, position: Int!): [Column!]! # TODO: toIndex
 }
 
-type Item {
+type Item { # TODO Rename to card
     id: ID!
     name: String!
     done: Boolean!

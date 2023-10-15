@@ -3,11 +3,12 @@ import {useQuery} from "@tanstack/react-query";
 import request from "graphql-request";
 import {GRAPHQL_SERVER} from "../config";
 
-const KANBAN_QUERY = graphql(/* GraphQL */`
-    query Kanban {
-        kanban {
+const QUERY_KANBAN_BOARD = graphql(/* GraphQL */`
+    query KanbanBoard {
+        kanbanBoard {
             id
             name
+
             items {
                 id
                 name
@@ -15,15 +16,17 @@ const KANBAN_QUERY = graphql(/* GraphQL */`
             }
         }
     }
-`)
+`);
+
+export const QUERY_KANBAN_BOARD_KEY = 'kanbanBoard';
 
 export function useKanbanData() {
     return useQuery({
-        queryKey: ['kanban'],
+        queryKey: [QUERY_KANBAN_BOARD_KEY],
         queryFn: async () =>
             request(
                 GRAPHQL_SERVER,
-                KANBAN_QUERY,
+                QUERY_KANBAN_BOARD,
             ),
     });
 }
