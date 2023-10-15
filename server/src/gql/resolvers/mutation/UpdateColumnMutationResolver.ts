@@ -10,16 +10,32 @@ export class UpdateColumnMutationResolver extends MutationResolverAbstract {
         const {columnId, name} = args;
         console.log(args);
 
+        try {
+            const updatedColumn = await this.updateColumn(parseInt(columnId), name);
+            if (!updatedColumn) {
+                throw new Error('column not found');
+            }
+
+            return updatedColumn;
+        } catch (e) {
+            console.log(e);
+            throw new Error('An error occurred while updating the column');
+        }
+    }
+
+    protected async updateColumn(columnId: number, name: string): Promise<any> {
         return this.client.column.update({
-            where: {id: parseInt(columnId)},
+            where: {id: columnId},
             data: {
                 name: name
             },
             include: {
-                items: true,
-            }
-        }).catch(e => {
-            console.log(e)
+                items: {
+                    orderBy: {
+                        position: 'asc',
+                    }
+                },
+            },
         });
     }
 }
