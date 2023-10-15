@@ -3,12 +3,14 @@ import {KanbanItem} from "./KanbanItem";
 import {useUpdateKanbanItem} from "../model/useUpdateKanbanItem";
 import {useState} from "react";
 import {CustomDialog} from "./CustomDialog";
+import {useDeleteKanbanItem} from "../model/useDeleteKanbanItem";
 
 export function DraggableKanbanItem({index, item: {id, name, done}}: {
     item: { id: string; name: string; done: boolean },
     index: number
 }) {
     const updateItemMutation = useUpdateKanbanItem();
+    const deleteItemMutation = useDeleteKanbanItem();
 
     const [open, setOpen] = useState(false);
 
@@ -20,13 +22,20 @@ export function DraggableKanbanItem({index, item: {id, name, done}}: {
         });
     }
 
-    const handleEdit = async (newName: string) => {
+    async function handleEdit(newName: string) {
         await updateItemMutation.mutateAsync({
             itemId: id,
             name: newName
         });
-    };
+    }
 
+    async function handleDelete() {
+        console.log("Delete")
+        console.log(id)
+        await deleteItemMutation.mutateAsync({
+            itemId: id
+        })
+    }
 
     return (
         <Draggable draggableId={id} index={index}>
@@ -37,11 +46,13 @@ export function DraggableKanbanItem({index, item: {id, name, done}}: {
                                 done={done}
                                 onCheckboxChange={handleCheckboxChange}
                                 onEditClick={() => setOpen(true)}
+                                onDeleteClick={handleDelete}
                                 ref={provided.innerRef}
                     />
 
                     <CustomDialog
                         textFieldHint={'New name'}
+                        initialValue={name}
                         actionButtonText="Save"
                         open={open}
                         onClose={() => setOpen(false)}

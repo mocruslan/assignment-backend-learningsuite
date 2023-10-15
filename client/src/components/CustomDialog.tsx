@@ -3,7 +3,7 @@ import {Button, Dialog, DialogActions, Stack, TextField} from "@mui/material";
 
 type CustomDialogProps = {
     textFieldHint?: string;
-    initialName?: string;
+    initialValue?: string;
     actionButtonText: string;
     open: boolean;
     onClose: () => void;
@@ -12,24 +12,25 @@ type CustomDialogProps = {
 
 export const CustomDialog = ({
                                  textFieldHint,
-                                 initialName,
+                                 initialValue,
                                  actionButtonText,
                                  open,
                                  onClose,
                                  onSave
                              }: CustomDialogProps) => {
-    const [newItemName, setNewItemName] = useState(initialName ? initialName : '');
+    const [newItemValue, setNewItemValue] = useState(initialValue ? initialValue : '');
 
     const handleSave = () => {
-        onSave(newItemName);
+        onSave(newItemValue);
         onClose();
-        setNewItemName('');
+        setNewItemValue('');
     };
 
     return (
         <Dialog open={open} onClose={onClose}>
             <Stack p={2}>
-                <TextField label={textFieldHint} value={newItemName} onChange={(e) => setNewItemName(e.target.value)}/>
+                <TextField label={textFieldHint} value={newItemValue}
+                           onChange={(e) => setNewItemValue(e.target.value)}/>
             </Stack>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
