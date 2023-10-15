@@ -3,30 +3,26 @@ import {MutationResolverAbstract} from "../abstracts/MutationResolverAbstract";
 export class MoveItemMutationResolver extends MutationResolverAbstract {
     async getResolver(args: any): Promise<any> {
         const {itemId, toColumnId, position} = args;
-        console.log(args); // TODO: Add as debug
 
         try {
             const targetItem = await this.client.item.findUnique({
                 where: {id: parseInt(itemId)},
             });
             if (!targetItem) {
-                throw new Error('item not found');
+                throw new Error('Item not found');
             }
 
             const hasColumnChanged = targetItem.columnId !== parseInt(toColumnId);
             if (hasColumnChanged) {
                 await this.reorderItemsAcrossColumns(targetItem, itemId, toColumnId, position);
-
-                const result = await this.fetchColumnsByIdsWithItemsAsc([targetItem.columnId, parseInt(toColumnId)])
-                console.log(result);
-                return result;
             } else {
                 await this.reorderItemsWithinColumn(targetItem, itemId, position);
-                return await this.fetchColumnWithItemsByIdAsc(targetItem.columnId);
             }
+
+            return this.fetchAllColumnsWithItemsAsc();
         } catch (e) {
             console.log(e);
-            throw new Error('An error occurred while moving the item');
+            throw new Error('An error occurred while moving item');
         }
     }
 

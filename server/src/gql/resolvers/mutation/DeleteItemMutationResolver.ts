@@ -1,17 +1,22 @@
 import {MutationResolverAbstract} from "../abstracts/MutationResolverAbstract";
 
 type DeleteItemMutationResolverArgs = {
-    itemId: string;
-};
+    itemId: string
+}
 
 export class DeleteItemMutationResolver extends MutationResolverAbstract {
     async getResolver(args: DeleteItemMutationResolverArgs): Promise<any> {
-        try {
-            const deletedItem = await this.deleteItem(args.itemId);
-            this.validateItem(deletedItem);
+        const {itemId} = args;
+        console.log(args); // TODO: Add as debug
 
-            const itemsToUpdate = await this.fetchItemsByColumnId(deletedItem.columnId);
-            this.validateItems(itemsToUpdate);
+        try {
+            const deletedItem = await this.deleteItem(itemId);
+            if (deletedItem == null) {
+                throw new Error('item not found');
+            }
+
+            let itemsToUpdate = await this.fetchItemsByColumnId(deletedItem.columnId);
+            if (itemsToUpdate == null) return null;
 
             await this.updateItemPositions(itemsToUpdate);
 
@@ -26,18 +31,6 @@ export class DeleteItemMutationResolver extends MutationResolverAbstract {
         return this.client.item.delete({
             where: {id: parseInt(itemId)}
         });
-    }
-
-    protected validateItem(item: any) {
-        if (!item) {
-            throw new Error('Item not found');
-        }
-    }
-
-    protected validateItems(items: any[]) {
-        if (!items || items.length === 0) {
-            throw new Error('Items not found');
-        }
     }
 
     protected async updateItemPositions(items: any[]) {

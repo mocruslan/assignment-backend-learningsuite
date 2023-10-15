@@ -9,7 +9,9 @@ export class MoveColumnMutationResolver extends MutationResolverAbstract {
     async getResolver(args: MoveColumnMutationResolverArgs): Promise<any> {
         try {
             const columnsToUpdate = await this.fetchAllColumnsAsc();
-            this.validateColumns(columnsToUpdate);
+            if (!columnsToUpdate) {
+                throw new Error('No columns found');
+            }
 
             const indexToRemove = this.findIndexToRemove(columnsToUpdate, args.columnId);
             const reorderedColumns = this.reorderColumns(columnsToUpdate, indexToRemove, args.position);
@@ -20,12 +22,6 @@ export class MoveColumnMutationResolver extends MutationResolverAbstract {
         } catch (e) {
             console.log(e);
             throw new Error('An error occurred while moving the column');
-        }
-    }
-
-    protected validateColumns(columns: any[]) {
-        if (!columns || columns.length === 0) {
-            throw new Error('No columns found');
         }
     }
 
