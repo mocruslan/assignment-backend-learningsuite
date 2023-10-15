@@ -41,7 +41,7 @@ export abstract class MutationResolverAbstract implements IResolver {
                 index: 'asc',
             },
         }).catch(e => {
-            console.log(e);
+            console.error(e);
         });
     }
 

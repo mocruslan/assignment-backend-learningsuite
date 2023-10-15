@@ -5,10 +5,6 @@ export class RootGenerator {
     constructor(protected resolverFactory: GQLResolverFactory) {
     }
 
-    protected convertTypeToCamelCase(type: string): string {
-        return type.charAt(0).toLowerCase() + type.slice(1);
-    }
-
     generateRoot(): Record<string, Function> {
         const root: Record<string, Function> = {};
 
@@ -29,5 +25,9 @@ export class RootGenerator {
         }
 
         return root;
+    }
+
+    protected convertTypeToCamelCase(type: string): string {
+        return type.charAt(0).toLowerCase() + type.slice(1);
     }
 }
