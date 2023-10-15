@@ -20,7 +20,7 @@ export const CustomDialog = ({
                              }: CustomDialogProps) => {
     const [newItemValue, setNewItemValue] = useState(initialValue ? initialValue : '');
 
-    const handleSave = () => {
+    const handleSubmit = () => {
         onSave(newItemValue);
         onClose();
         setNewItemValue('');
@@ -34,7 +34,7 @@ export const CustomDialog = ({
             </Stack>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button onClick={handleSave}>{actionButtonText}</Button>
+                <Button onClick={handleSubmit}>{actionButtonText}</Button>
             </DialogActions>
         </Dialog>
     );

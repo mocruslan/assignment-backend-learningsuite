@@ -71,7 +71,7 @@ export function DraggableKanbanList(
                             )}
                         </Droppable>
 
-                        <Button onClick={() => setOpenRename(true)}>Add item</Button>
+                        <Button onClick={() => setOpenItemAdd(true)}>Add item</Button>
 
                         <CustomDialog
                             textFieldHint={'Item name'}
