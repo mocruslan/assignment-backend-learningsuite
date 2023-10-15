@@ -3,7 +3,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import request from "graphql-request";
 import {GRAPHQL_SERVER} from "../config";
 import {QUERY_KANBAN_BOARD_KEY} from "./useKanbanData";
-import {UpdateItemMutation} from "../gql/graphql";
+import {Column, UpdateItemMutation} from "../gql/graphql";
 
 
 type UpdateItemMutationVariables = {
@@ -18,12 +18,10 @@ const MUTATE_UPDATE_ITEM = graphql(/* GraphQL */`
             column {
                 id
                 name
-                position
                 items {
                     id
                     name
                     done
-                    position
                 }
             }
         }
@@ -41,15 +39,13 @@ export function useUpdateKanbanItem() {
                 variables,
             ),
         onSuccess: async (data: UpdateItemMutation) => {
-            const existingData = client.getQueryData<{ kanbanBoard: any[] }>([QUERY_KANBAN_BOARD_KEY]);
+            const existingData = client.getQueryData<{ kanbanBoard: Column[] }>([QUERY_KANBAN_BOARD_KEY]);
 
             if (existingData) {
-                const updatedKanbanBoard = existingData.kanbanBoard.map(column => {
-                    if (column.id === data.updateItem.column.id) {
-                        return data.updateItem.column;
-                    }
-                    return column;
-                });
+                const updatedKanbanBoard = existingData.kanbanBoard.map(
+                    existingColumn => {
+                        return existingColumn.id === data.updateItem.column.id ? data.updateItem.column : existingColumn;
+                    });
 
                 client.setQueryData([QUERY_KANBAN_BOARD_KEY], {kanbanBoard: updatedKanbanBoard});
             }

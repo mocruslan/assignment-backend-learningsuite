@@ -14,13 +14,31 @@ class App {
     protected readonly resolverFactory: GQLResolverFactory;
     protected rootGenerator: RootGenerator;
 
+    protected defaultColumns = ['Todo', 'In Progress', 'Done'];
+
     constructor() {
         this.prisma = new PrismaClient();
         this.resolverFactory = new GQLResolverFactory(this.prisma);
         this.rootGenerator = new RootGenerator(this.resolverFactory);
     }
 
-    // TODO: Add default columns
+    protected async addColumns(columns: string[]) {
+        for (let i = 0; i < columns.length; i++) {
+            const name = columns[i];
+            const existingColumn = await this.prisma.column.findFirst({
+                where: {name}
+            });
+            if (!existingColumn) {
+                await this.prisma.column.create({
+                    data: {
+                        name,
+                        index: i
+                    }
+                });
+            }
+        }
+    }
+
 
     protected getGraphQLSchema(): GraphQLSchema {
         return buildSchema(readFileSync('./schemas/schema.graphql', 'utf-8'));
@@ -30,7 +48,9 @@ class App {
         return this.rootGenerator.generateRoot();
     }
 
-    start() {
+    async start() {
+        await this.addColumns(this.defaultColumns);
+
         const app = express();
         app.use(cors());
         app.use(
@@ -47,4 +67,4 @@ class App {
 }
 
 const server = new App();
-server.start()
+server.start().then()

@@ -12,38 +12,29 @@ export function KanbanBoard() {
     const moveKanbanColumn = useMoveKanbanColumn()
 
     const handleOnDragEnd = useCallback(async (result: DropResult, provided: ResponderProvided) => {
-        // TODO: Might be useful: https://tanstack.com/query/v4/docs/react/guides/queries
-
         if ((!result.destination) ||
             (result.reason === 'CANCEL') ||
             (result.destination.index === result.source.index && result.source.droppableId === result.destination.droppableId)
         ) return;
-
-        console.log("Result")
-        console.log(result)
-        console.log(provided)
 
         switch (result.type.toLowerCase()) {
             case 'item':
                 await moveKanbanItem.mutateAsync({
                     itemId: result.draggableId,
                     toColumnId: result.destination.droppableId,
-                    position: result.destination.index,
+                    toIndex: result.destination.index,
                 });
                 break;
             case 'column':
                 if (result.destination.droppableId === 'kanbanBoard') {
                     await moveKanbanColumn.mutateAsync({
                         columnId: result.draggableId,
-                        position: result.destination.index,
+                        toIndex: result.destination.index,
                     });
                 }
                 break;
         }
     }, []);
-
-    console.log("Data kanbanBoard")
-    console.log(data?.kanbanBoard)
 
     return (
         <Box sx={{paddingBottom: 4}}>

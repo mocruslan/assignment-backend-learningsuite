@@ -1,6 +1,6 @@
 import {MutationResolverAbstract} from "../abstracts/MutationResolverAbstract";
 
-export type UpdateItemMutationResolverArgs = {
+type UpdateItemMutationResolverArgs = {
     itemId: string;
     name?: string;
     done?: boolean;
@@ -9,7 +9,6 @@ export type UpdateItemMutationResolverArgs = {
 export class UpdateItemMutationResolver extends MutationResolverAbstract {
     async getResolver(args: UpdateItemMutationResolverArgs): Promise<any> {
         const {itemId, name, done} = args;
-        console.log(args); // TODO: Add as debug
 
         try {
             const updatedItem = await this.updateItem(parseInt(itemId), name, done);
@@ -23,12 +22,12 @@ export class UpdateItemMutationResolver extends MutationResolverAbstract {
                 column: updatedColumn,
             }
         } catch (e) {
-            console.log(e);
+            console.error(e);
             throw new Error('An error occurred while updating the item');
         }
     }
 
-    protected async updateItem(itemId: number, name?: string, done?: boolean): Promise<any> {
+    protected async updateItem(itemId: number, name?: string, done?: boolean) {
         return this.client.item.update({
             where: {id: itemId},
             data: {

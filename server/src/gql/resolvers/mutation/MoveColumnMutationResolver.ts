@@ -1,68 +1,60 @@
 import {MutationResolverAbstract} from "../abstracts/MutationResolverAbstract";
 
-export type MoveColumnMutationResolverArgs = {
+type MoveColumnMutationResolverArgs = {
     columnId: string;
-    position: number;
-}
+    toIndex: number;
+};
 
 export class MoveColumnMutationResolver extends MutationResolverAbstract {
     async getResolver(args: MoveColumnMutationResolverArgs): Promise<any> {
-        const {columnId, position} = args;
+        const {columnId, toIndex} = args;
 
         try {
-            const currentColumn = await this.client.column.findUnique({
-                where: {id: parseInt(columnId)},
-            });
-            if (!currentColumn) return null;
-
-            const columnsToUpdate = await this.client.column.findMany({
-                orderBy: {position: 'asc'},
-            });
-
-            if (columnsToUpdate) {
-                const indexToRemove = columnsToUpdate.findIndex(column => column.id === parseInt(columnId));
-                const [removed] = columnsToUpdate.splice(indexToRemove, 1);
-                columnsToUpdate.splice(position, 0, removed);
-
-                for (let i = 0; i < columnsToUpdate.length; i++) {
-                    columnsToUpdate[i].position = i;
-                }
-
-                const updatePromises = columnsToUpdate.map((item) => {
-                    return this.client.column.update({
-                        where: {id: item.id},
-                        data: {position: item.position}
-                    });
-                });
-
-                await Promise.all(updatePromises);
-            } else {
-                await this.client.column.update({
-                    where: {id: parseInt(columnId)},
-                    data: {
-                        position: position,
-                    },
-                });
+            const columnsToUpdate = await this.fetchAllColumnsAsc();
+            if (!columnsToUpdate) {
+                throw new Error('No columns found');
             }
 
-            return this.client.column.findMany({
-                include: {
-                    items: {
-                        orderBy: {
-                            position: 'asc',
-                        }
-                    },
-                },
-                orderBy: {
-                    position: 'asc',
-                }
-            }).catch(e => {
-                console.log(e);
-            });
-        } catch (e) {
-            console.log(e);
-        }
+            const indexToRemove = this.findIndexToRemove(columnsToUpdate, columnId);
+            const reorderedColumns = this.reorderColumns(columnsToUpdate, indexToRemove, toIndex);
 
-        return null;
+            await this.updateColumnPositions(reorderedColumns);
+
+            return await this.fetchAllColumnsWithItemsAsc();
+        } catch (e) {
+            console.error(e);
+            throw new Error('An error occurred while moving the column');
+        }
+    }
+
+    protected findIndexToRemove(columns: any[], columnId: string): number {
+        const index = columns.findIndex(column => column.id === parseInt(columnId));
+        if (index === -1) {
+            throw new Error('Column not found');
+        }
+        return index;
+    }
+
+    protected reorderColumns(columns: any[], indexToRemove: number, newIndex: number): any[] {
+        const [removed] = columns.splice(indexToRemove, 1);
+        columns.splice(newIndex, 0, removed);
+        return columns;
+    }
+
+    protected async updateColumnPositions(columns: any[]): Promise<void> {
+        const updatePromises = columns.map((column, index) => {
+            if (column.index !== index) {
+                return this.updateColumnPositionForId(column.id, index);
+            }
+            return Promise.resolve();
+        });
+        await Promise.all(updatePromises);
+    }
+
+    protected updateColumnPositionForId(columnId: number, index: number) {
+        return this.client.column.update({
+            where: {id: columnId},
+            data: {index}
+        });
     }
 }
