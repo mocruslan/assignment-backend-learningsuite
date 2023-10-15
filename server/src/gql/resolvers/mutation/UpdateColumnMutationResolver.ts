@@ -23,7 +23,7 @@ export class UpdateColumnMutationResolver extends MutationResolverAbstract {
         }
     }
 
-    protected async updateColumn(columnId: number, name: string): Promise<any> {
+    protected async updateColumn(columnId: number, name: string) {
         return this.client.column.update({
             where: {id: columnId},
             data: {

@@ -3,6 +3,7 @@ import request from "graphql-request";
 import {GRAPHQL_SERVER} from "../config";
 import {graphql} from "../gql";
 import {QUERY_KANBAN_BOARD_KEY} from "./useKanbanData";
+import {MoveColumnMutation} from "../gql/graphql";
 
 const MUTATE_MOVE_COLUMN = graphql(/* GraphQL */`
     mutation MoveColumn($columnId: ID!, $position: Int!) {
@@ -30,8 +31,7 @@ export function useMoveKanbanColumn() {
                 MUTATE_MOVE_COLUMN,
                 variables,
             ),
-        // update
-        onSuccess: (data) => {
+        onSuccess: (data: MoveColumnMutation) => {
             client.setQueryData([QUERY_KANBAN_BOARD_KEY], {kanbanBoard: data.moveColumn})
         }
     });

@@ -28,7 +28,7 @@ export class UpdateItemMutationResolver extends MutationResolverAbstract {
         }
     }
 
-    protected async updateItem(itemId: number, name?: string, done?: boolean): Promise<any> {
+    protected async updateItem(itemId: number, name?: string, done?: boolean) {
         return this.client.item.update({
             where: {id: itemId},
             data: {

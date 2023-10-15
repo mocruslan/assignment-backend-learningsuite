@@ -3,7 +3,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import request from "graphql-request";
 import {GRAPHQL_SERVER} from "../config";
 import {QUERY_KANBAN_BOARD_KEY} from "./useKanbanData";
-import {DeleteItemMutation} from "../gql/graphql";
+import {Column, DeleteItemMutation} from "../gql/graphql";
 
 
 type DeleteItemMutationVariables = {
@@ -15,10 +15,12 @@ const MUTATION_DELETE_KANBAN_ITEM = graphql(/* GraphQL */`
         deleteItem(itemId: $itemId) {
             id
             name
+            position
             items {
                 id
                 name
                 done
+                position
             }
         }
     }
@@ -35,16 +37,15 @@ export function useDeleteKanbanItem() {
                 variables,
             ),
         onSuccess: async (data: DeleteItemMutation) => {
-            const existingData = client.getQueryData<{ kanbanBoard: any[] }>([QUERY_KANBAN_BOARD_KEY]);
+            const existingData = client.getQueryData<{ kanbanBoard: Column[] }>([QUERY_KANBAN_BOARD_KEY]);
 
             if (existingData) {
-                const updatedKanbanBoard = existingData.kanbanBoard.map(column => {
-                    if (column.id === data.deleteItem.id) {
-                        return data.deleteItem;
-                    }
-                    return column;
+                const updatedKanbanBoard = existingData.kanbanBoard.map(
+                    existingColumn => {
+                        return existingColumn.id === data.deleteItem.id ? data.deleteItem : existingColumn;
                 });
 
+                // Update the query cache with the new kanban board data
                 client.setQueryData([QUERY_KANBAN_BOARD_KEY], {kanbanBoard: updatedKanbanBoard});
             }
         }

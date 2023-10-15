@@ -8,11 +8,12 @@ const QUERY_KANBAN_BOARD = graphql(/* GraphQL */`
         kanbanBoard {
             id
             name
-
+            position
             items {
                 id
                 name
                 done
+                position
             }
         }
     }
